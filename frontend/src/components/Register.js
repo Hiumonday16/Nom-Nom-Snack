@@ -17,21 +17,17 @@ function Register() {
   const [address, setAddress] = useState('');
   const [postalCode, setPostalCode] = useState('');
   const [phone, setPhone] = useState('');
-  const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Basic validation
     if (!name.trim() || !email.trim() || !password.trim() || !address.trim() || !postalCode.trim() || !phone.trim()) {
-      setMessage('Please fill in all fields');
       return;
     }
 
     setIsLoading(true);
-    setMessage('');
 
     try {
       const response = await fetch('http://localhost:5000/api/register', {
@@ -44,15 +40,12 @@ function Register() {
       const data = await response.json();
       
       if (response.ok) {
-        setMessage('Registration successful! Redirecting to login...');
         setTimeout(() => {
           navigate('/login');
-        }, 2000); // Give user time to see success message
-      } else {
-        setMessage(data.message || 'Registration failed. Please try again.');
+        }, 1000);
       }
     } catch (error) {
-      setMessage('Network error occurred. Please try again.');
+      // Handle error silently
     } finally {
       setIsLoading(false);
     }
@@ -70,16 +63,6 @@ function Register() {
       <div className={styles.formSection}>
         <div className={styles.formContainer}>
           <h2>Register</h2>
-          {message && (
-            <div 
-              className={`${styles.message} ${
-                message.includes('successful') ? styles.success : styles.error
-              }`}
-              role="alert"
-            >
-              {message}
-            </div>
-          )}
           <form onSubmit={handleSubmit}>
             <input
               type="text"

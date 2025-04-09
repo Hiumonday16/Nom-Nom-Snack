@@ -12,21 +12,17 @@ const foodImages = [
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    // Basic validation
     if (!username.trim() || !password.trim()) {
-      setMessage('Please fill in all fields');
       return;
     }
 
     setIsLoading(true);
-    setMessage('');
 
     try {
       const response = await fetch('http://localhost:5000/api/login', {
@@ -40,16 +36,12 @@ function Login() {
       
       if (response.ok) {
         localStorage.setItem('token', data.token);
-        setMessage('Login successful! Redirecting...');
         setTimeout(() => {
           navigate('/');
         }, 1000);
-      } else {
-        // Enhanced error message handling
-        setMessage(data.message || 'Invalid username or password');
       }
     } catch (error) {
-      setMessage('Network error occurred. Please try again.');
+      // Handle error silently
     } finally {
       setIsLoading(false);
     }
@@ -67,16 +59,6 @@ function Login() {
       <div className={styles.formSection}>
         <div className={styles.formContainer}>
           <h2>Login</h2>
-          {message && (
-            <div 
-              className={`${styles.message} ${
-                message.includes('successful') ? styles.success : styles.error
-              }`}
-              role="alert"
-            >
-              {message}
-            </div>
-          )}
           <form onSubmit={handleSubmit}>
             <input
               type="text"
